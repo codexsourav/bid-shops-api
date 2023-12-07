@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { VerifyMail, changePass, forgetPass, login, resendOtp, resendVerifyMail, signUp, verifyOtp } from '../controller/authController.js';
+import { cancelOrder, createOrder, updateAddress } from '../controller/ordersController.js'
 import middleware from '../middleware/middleware.js';
+import { updateUserAddress } from '../controller/addressController.js';
 const appRoutes = Router();
 
-appRoutes.get('/api/address', middleware, login);
-appRoutes.patch('/api/address', middleware, login);
+appRoutes.patch('/api/address', middleware, updateUserAddress);
 
-appRoutes.post('/api/orders', middleware, verifyOtp);
-appRoutes.post('/api/order', middleware, verifyOtp);
-appRoutes.delete('/api/order/:id', middleware, verifyOtp);
+appRoutes.post('/api/order', middleware, createOrder);
+appRoutes.post('/api/order/:id', middleware, updateAddress);
+appRoutes.delete('/api/order/:id', middleware, cancelOrder);
 
 export default appRoutes;

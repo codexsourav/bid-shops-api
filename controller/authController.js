@@ -8,6 +8,45 @@ import { isDateUpToCurrent } from "../utils/MakeTimes.js";
 import makeTwtToken from "../utils/makeTwtToken.js";
 import { isValidMobile, validateEmail } from "../utils/validate.js";
 
+
+export const adminLogin = async (req, res) => {
+    const { userinfo, pass } = req.body;
+
+    try {
+
+        if (!userinfo, !pass) {
+            return res.json({ "error": "Please Enter Your Credentials", "success": false });
+        }
+
+        const user = await usersModel.findOne({
+            "$or": [{ "email": userinfo }, { "mobile": userinfo }]
+        }, { "verify": 0 });
+
+        if (!user) {
+            return res.json({ "error": "Invalid Credentials Details", "success": false });
+        }
+
+        const isVerified = validateHashPass(user.pass, pass);
+        if (!isVerified) {
+            return res.status(406).json({ "error": "Invalid Auth Credentials Details", "success": false });
+        } else if (!user.isAllow) {
+            return res.status(406).json({ "error": "Your Account is Suspended", "success": false });
+        } else if (!user.isAdmin) {
+            return res.status(203).json({ "success": false, "error": "Your Are Not Admin" });
+        }
+
+        delete user._doc.pass;
+        delete user._doc.verify;
+
+        const token = makeTwtToken(res, { _id: user._id, email: user.email, mobile: user.mobile });
+        return res.status(202).json({ ...user._doc, token, "success": true });
+    } catch (error) {
+        console.log(error);
+        return res.json({ "error": error.toString(), "success": false });
+    }
+
+};
+
 export const login = async (req, res) => {
     const { userinfo, pass } = req.body;
 
@@ -27,7 +66,7 @@ export const login = async (req, res) => {
 
         const isVerified = validateHashPass(user.pass, pass);
         if (!isVerified) {
-            return res.status(406).json({ "error": "Invalid Credentials Details", "success": false });
+            return res.status(406).json({ "error": "Invalid Auth Credentials Details", "success": false });
         } else if (!user.isAllow) {
             return res.status(406).json({ "error": "Your Account is Suspended", "success": false });
         } else if (!user.isMobileVerify) {
@@ -50,9 +89,9 @@ export const login = async (req, res) => {
 
 export const signUp = async (req, res) => {
 
-    const { name, email, mobile, pass, state } = req.body;
+    const { name, email, mobile, pass } = req.body;
 
-    if (!name, !email, !mobile, !pass, !state) {
+    if (!name || !email || !mobile || !pass) {
         return res.json({ "error": "Please Fill All Fields", "success": false });
     } else if (name.length <= 2) {
         return res.json({ "error": "Name is Too Short Min 3.", "success": false });
@@ -76,7 +115,7 @@ export const signUp = async (req, res) => {
         }
 
         // send Otp HEre 
-        const createUser = new usersModel({ name, email, mobile, pass, state });
+        const createUser = new usersModel({ name, email, mobile, pass });
         const user = await createUser.save();
         await sendOtp(mobile);
         await sendVerifyMailMail(name, email, "Verify Your Account");

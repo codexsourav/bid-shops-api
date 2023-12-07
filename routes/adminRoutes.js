@@ -1,23 +1,31 @@
 import { Router } from 'express';
-import upload from "../helper/UploadFile.js";
-
-import { VerifyMail, changePass, forgetPass, login, resendOtp, resendVerifyMail, signUp, verifyOtp } from '../controller/authController.js';
 import adminMiddleware from '../middleware/adminMiddleware.js';
-import { addProduct } from '../controller/productManegeController.js';
+import { addProduct, deleteProduct, updateProduct } from '../controller/productManegeController.js';
+import { blockUsers, deleteUsers, getUsers, getVerifiedUsers } from '../controller/userManageController.js';
+import { createNewBid, deleteBidById, getBidsBid, updateBidById } from '../controller/bidManagerController.js';
+import { getOrdersWithProductData } from '../controller/ordersController.js';
+import { adminLogin } from '../controller/authController.js';
 const appRoutes = Router();
 
-appRoutes.post('/api/product', adminMiddleware, upload.fields([{ name: "image", maxCount: 1 }, { name: "gallery" }]), addProduct);
-appRoutes.patch('/api/product', adminMiddleware, upload.fields([{ name: "image", maxCount: 1 }, { name: "gallery" }]), login);
-// appRoutes.delete('/api/product', adminMiddleware, login);
+appRoutes.post('/api/admin/login', adminLogin);
 
-// appRoutes.post('/api/bid', adminMiddleware, login);
-// appRoutes.patch('/api/bid', adminMiddleware, login);
-// appRoutes.delete('/api/bid', adminMiddleware, login);
+appRoutes.post('/api/product', adminMiddleware, addProduct);
+appRoutes.patch('/api/product/:id', adminMiddleware, updateProduct);
+appRoutes.delete('/api/product/:id', adminMiddleware, deleteProduct);
 
-// appRoutes.post('/api/users', adminMiddleware, login);
-// appRoutes.patch('/api/user', adminMiddleware, login);
-// appRoutes.delete('/api/user', adminMiddleware, login);
+appRoutes.get('/api/bid/:id', adminMiddleware, getBidsBid);
+appRoutes.post('/api/bid', adminMiddleware, createNewBid);
+appRoutes.patch('/api/bid/:id', adminMiddleware, updateBidById);
+appRoutes.delete('/api/bid/:id', adminMiddleware, deleteBidById);
 
-// appRoutes.get('/api/bidswinners', adminMiddleware, login);
+appRoutes.get('/api/users', adminMiddleware, getUsers);
+appRoutes.get('/api/users/verified', adminMiddleware, getVerifiedUsers);
+
+appRoutes.patch('/api/user/:id', adminMiddleware, blockUsers);
+appRoutes.delete('/api/user/:id', adminMiddleware, deleteUsers);
+
+appRoutes.get('/api/orders', adminMiddleware, getOrdersWithProductData);
+
+// appRoutes.get('/api/bidswinners', adminMiddleware, login); getOrdersWithProductData
 
 export default appRoutes;

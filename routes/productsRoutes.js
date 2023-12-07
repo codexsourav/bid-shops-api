@@ -1,19 +1,20 @@
 import { Router } from 'express';
-import { VerifyMail, changePass, forgetPass, login, resendOtp, resendVerifyMail, signUp, verifyOtp } from '../controller/authController.js';
 import middleware from '../middleware/middleware.js';
+import { addToCart, cartData, removeFromCart } from '../controller/cartController.js';
+import { getWishList, manageWishList } from '../controller/wishListController.js';
+import { getPopulerProduct, getProductById, getProducts, searchProducts } from '../controller/productController.js';
 const appRoutes = Router();
 
-appRoutes.get('/api/products', middleware, login);
-appRoutes.get('/api/search/:query', middleware, signUp);
+appRoutes.get('/api/product/:id', middleware, getProductById);
+appRoutes.get('/api/products', middleware, getProducts);
+appRoutes.get('/api/products/popular', middleware, getPopulerProduct);
+appRoutes.get('/api/products/search/:query', middleware, searchProducts);
 
-appRoutes.get('/api/cart', middleware, verifyOtp);
-appRoutes.post('/api/cart', middleware, verifyOtp);
-appRoutes.patch('/api/cart/:id', middleware, verifyOtp);
-appRoutes.delete('/api/cart/:id', middleware, verifyOtp);
+appRoutes.get('/api/cart', middleware, cartData);
+appRoutes.patch('/api/cart', middleware, addToCart);
+appRoutes.delete('/api/cart/:id', middleware, removeFromCart);
 
-appRoutes.get('/api/wishlist', middleware, verifyOtp);
-appRoutes.post('/api/wishlist', middleware, verifyOtp);
-appRoutes.delete('/api/wishlist/:id', middleware, verifyOtp);
-
+appRoutes.get('/api/wishlist', middleware, getWishList);
+appRoutes.patch('/api/wishlist/:id', middleware, manageWishList);
 
 export default appRoutes;

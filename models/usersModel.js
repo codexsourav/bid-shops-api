@@ -61,6 +61,10 @@ const users = new Schema({
         type: Array,
         default: [],
     },
+    bids: {
+        type: Array,
+        default: [],
+    },
     cart: [
         {
             productId: {

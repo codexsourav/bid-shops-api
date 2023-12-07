@@ -1,5 +1,4 @@
 import './db.js';
-import HashPass from '../utils/HashPass.js';
 import { Schema, model } from 'mongoose';
 
 const products = new Schema({

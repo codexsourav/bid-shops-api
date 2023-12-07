@@ -1,0 +1,53 @@
+import './db.js';
+import { Schema, model } from 'mongoose';
+
+const bids = new Schema({
+    image: {
+        type: String,
+        require: true,
+    },
+    title: {
+        type: String,
+        require: true,
+    },
+    desc: {
+        type: String,
+        require: true,
+    },
+    hintPrice: {
+        type: Number,
+        required: true,
+    },
+    minPrice: {
+        type: Number,
+        required: true,
+    },
+
+    rating: {
+        type: Number,
+        default: 4.5
+    },
+    users: [
+        {
+            userId: String,
+            amount: Number,
+        }
+    ],
+    startDate: {
+        type: Date,
+        require: true,
+    },
+    endDate: {
+        type: Date,
+        require: true,
+    },
+
+    date: {
+        type: Date,
+        default: Date.now(),
+        require: true,
+    }
+});
+
+
+export default model("bids", bids);
