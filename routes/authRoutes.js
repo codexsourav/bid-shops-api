@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { VerifyMail, changePass, forgetPass, login, resendOtp, resendVerifyMail, signUp, verifyOtp } from '../controller/authController.js';
+import { VerifyMail, changePass, forgetPass, login, resendOtp, resendVerifyMail, signUp, userProfile, verifyOtp } from '../controller/authController.js';
 import middleware from '../middleware/middleware.js';
 const appRoutes = Router();
 
@@ -16,7 +16,7 @@ appRoutes.post('/api/auth/verify-email/:email', resendVerifyMail);
 appRoutes.put('/api/auth/verify-email/:email', VerifyMail);
 
 
-appRoutes.get('/api/profile', middleware, login);
+appRoutes.get('/api/profile', middleware, userProfile);
 
 
 export default appRoutes;

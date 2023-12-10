@@ -4,6 +4,7 @@ import usersModel from "../models/usersModel.js";
 import generateOTP from "../utils/GenerateOTP.js";
 import futureTime from "../utils/MakeTimes.js";
 import generateRandomString from "../utils/RendomString.js";
+import hash from "../utils/HashPass.js";
 
 export const sendVerifyMail = async (name, email, subject) => {
     const otp = generateOTP();
@@ -31,12 +32,13 @@ export const sendResetPassMail = async (name, email, subject) => {
 }
 
 export const sendVerifyMailMail = async (name, email, subject) => {
+
     const otpHash = generateRandomString(50);
     const mailTemplate = newAcountMail(name, process.env.HOST_URI + "/verify-email/" + otpHash);
     try {
         const response = await sendMail(email, subject, mailTemplate);
-        const otpHash = hash(otp);
-        await usersModel.updateOne({ email }, { "verify": { "token": otpHash } });
+        const otpHashData = hash(otpHash);
+        await usersModel.updateOne({ email }, { "verify": { "token": otpHashData } });
         return response;
     } catch (error) {
         throw error;

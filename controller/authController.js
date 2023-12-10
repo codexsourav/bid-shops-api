@@ -300,3 +300,14 @@ export const VerifyMail = async (req, res) => {
         return res.json({ "error": error.toString(), "success": false });
     }
 }
+
+
+
+export const userProfile = async (req, res) => {
+    try {
+        const userData = await usersModel.findOne({ "_id": req.authUser._id }, { "pass": 0, "verify": 0 });
+        return res.json(userData);
+    } catch (error) {
+        return res.json({ "error": error.toString(), "success": false });
+    }
+}

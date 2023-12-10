@@ -2,17 +2,22 @@ import { Router } from 'express';
 import adminMiddleware from '../middleware/adminMiddleware.js';
 import { addProduct, deleteProduct, updateProduct } from '../controller/productManegeController.js';
 import { blockUsers, deleteUsers, getUsers, getVerifiedUsers } from '../controller/userManageController.js';
-import { createNewBid, deleteBidById, getBidsBid, updateBidById } from '../controller/bidManagerController.js';
+import { createNewBid, deleteBidById, getAllBids, getBidsBid, updateBidById } from '../controller/bidManagerController.js';
 import { getOrdersWithProductData } from '../controller/ordersController.js';
 import { adminLogin } from '../controller/authController.js';
+import { dashbordData } from '../controller/adminDashbord.js';
 const appRoutes = Router();
 
 appRoutes.post('/api/admin/login', adminLogin);
+
+appRoutes.get('/api/admin/dashbord', dashbordData);
+
 
 appRoutes.post('/api/product', adminMiddleware, addProduct);
 appRoutes.patch('/api/product/:id', adminMiddleware, updateProduct);
 appRoutes.delete('/api/product/:id', adminMiddleware, deleteProduct);
 
+appRoutes.get('/api/allbids', adminMiddleware, getAllBids);
 appRoutes.get('/api/bid/:id', adminMiddleware, getBidsBid);
 appRoutes.post('/api/bid', adminMiddleware, createNewBid);
 appRoutes.patch('/api/bid/:id', adminMiddleware, updateBidById);

@@ -1,3 +1,4 @@
+import { getBidWinner } from "../helper/getBidWinner.js";
 import bidModel from "../models/bidModel.js";
 
 export const getBidsBid = async (req, res) => {
@@ -5,6 +6,21 @@ export const getBidsBid = async (req, res) => {
     try {
         const data = await bidModel.findOne({ _id: id });
         return res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error', success: false, });
+    }
+}
+
+export const getAllBids = async (req, res) => {
+    try {
+        const data = await bidModel.find().sort({ "date": -1 });
+        var activeBisWithWinner = [];
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            const winner = await getBidWinner(element.users);
+            activeBisWithWinner.push({ ...element._doc, "winData": winner });
+        }
+        return res.json(activeBisWithWinner);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error', success: false, });
     }

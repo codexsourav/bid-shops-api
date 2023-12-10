@@ -29,8 +29,18 @@ const bids = new Schema({
     },
     users: [
         {
-            userId: String,
-            amount: Number,
+            user: {
+                type: String,
+                required: true,
+            },
+            amount: {
+                type: Number,
+                required: true,
+            },
+            date: {
+                type: Date,
+                default: Date.now(),
+            }
         }
     ],
     startDate: {

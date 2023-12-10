@@ -80,7 +80,7 @@ export const addToCart = async (req, res) => {
 
 
 export const removeFromCart = async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
 
     if (!id) {
         return res.send({ "error": "Invalid Request", "success": false });
@@ -98,7 +98,7 @@ export const removeFromCart = async (req, res) => {
         );
 
         // Respond with the updated user data
-        return res.send({ "success": true, "user": updatedUser });
+        return res.send({ "success": true });
     } catch (err) {
         return res.status(500).send({ "error": "Internal Server Error", "success": false });
     }

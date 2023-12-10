@@ -1,5 +1,4 @@
 import './db.js';
-import HashPass from '../utils/HashPass.js';
 import { Schema, model } from 'mongoose';
 
 const orders = new Schema({
@@ -47,18 +46,11 @@ const orders = new Schema({
         country: {
             type: String,
         },
+    },
+    date: {
+        type: Date,
+        default: Date.now(),
     }
-});
-
-orders.pre("save", function (next) {
-    if (!this.isModified("pass")) {
-        var hash = HashPass(pass);
-        this.pass = hash;
-        next();
-    }
-
-    this.pass = HashPass(this.pass);
-    next();
 });
 
 export default model("orders", orders);
