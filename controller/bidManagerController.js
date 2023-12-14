@@ -130,7 +130,7 @@ export const updateBidById = async (req, res) => {
 
         res.status(200).json({ success: true, updatedBid });
     } catch (error) {
-        log
+        console.log(error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
