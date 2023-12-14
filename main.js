@@ -8,6 +8,7 @@ import productsRoutes from "./routes/productsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import bidRouters from "./routes/bidRouters.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 import upload from "./helper/UploadFile.js";
 import middleware from './middleware/middleware.js';
@@ -27,7 +28,8 @@ app.use(
     productsRoutes,
     adminRoutes,
     orderRoutes,
-    bidRouters
+    bidRouters,
+    settingsRoutes,
 );
 
 app.post("/upload", middleware, upload.single("file"), async (req, res) => {

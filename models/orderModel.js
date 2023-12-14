@@ -2,18 +2,35 @@ import './db.js';
 import { Schema, model } from 'mongoose';
 
 const orders = new Schema({
-    productId: {
+    user: {
         type: String,
         require: true,
     },
-    qut: {
-        type: Number,
-        require: true,
-    },
+    products: [
+        {
+            productId: {
+                type: String,
+                require: true,
+            },
+            qut: {
+                type: Number,
+                require: true,
+            }
+        }
+    ],
     price: {
         type: Number,
         require: true,
     },
+    isCod: {
+        "type": {
+            type: Boolean,
+            require: true,
+            default: true,
+        },
+        paymentInfo: Object,
+    },
+
     status: {
         type: String,
         require: true,

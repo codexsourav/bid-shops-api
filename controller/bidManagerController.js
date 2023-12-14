@@ -29,13 +29,15 @@ export const getAllBids = async (req, res) => {
 export const createNewBid = async (req, res) => {
     try {
         // Destructure and extract necessary data from request body
-        const { image, title, desc, hintPrice, startDate, endDate, minPrice, rating } = req.body;
+        const { image, title, desc, hintPrice, startDate, endDate, minPrice, rating, isSlide, slideImage } = req.body;
 
         // Validate required fields
         if (!image || !title || !desc || !hintPrice || !startDate || !endDate || !minPrice || !rating) {
             return res.status(400).json({ error: 'All fields are required', success: false, });
         }
-
+        if (isSlide && slideImage == "") {
+            return res.status(400).json({ error: 'Select A Slide Image', success: false });
+        }
         // Create a new bid instance
         const newBid = new bidModel({
             image,
@@ -45,6 +47,8 @@ export const createNewBid = async (req, res) => {
             startDate,
             endDate,
             minPrice,
+            isSlide,
+            slideImage,
             rating,
         });
 
@@ -88,11 +92,14 @@ export const updateBidById = async (req, res) => {
     try {
         const { id } = req.params; // Extract the bid ID from request parameters
         // Destructure and extract necessary data from request body
-        const { image, title, desc, hintPrice, startDate, endDate, minPrice, rating } = req.body;
+        const { image, title, desc, hintPrice, startDate, endDate, minPrice, rating, isSlide, slideImage } = req.body;
 
         // Validate required fields
         if (!image || !title || !desc || !hintPrice || !startDate || !endDate || !minPrice || !rating) {
             return res.status(400).json({ error: 'All fields are required', success: false });
+        }
+        if (isSlide && slideImage == "") {
+            return res.status(400).json({ error: 'Select A Slide Image', success: false });
         }
         // Validate if the ID is provided
         if (!id) {
@@ -115,13 +122,33 @@ export const updateBidById = async (req, res) => {
         if (endDate) bid.endDate = endDate;
         if (minPrice) bid.minPrice = minPrice;
         if (rating) bid.rating = rating;
+        bid.isSlide = isSlide;
+        bid.slideImage = slideImage;
 
         // Save the updated bid
         const updatedBid = await bid.save();
 
         res.status(200).json({ success: true, updatedBid });
     } catch (error) {
+        log
         res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
 
+export const selectBidWinner = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { user, amount } = req.body;
+
+        await bidModel.updateOne({ "_id": id }, {
+            "$set": {
+                selectWinner: true,
+                winner: { user, amount, }
+            }
+        });
+        res.send({ success: true, message: "Winner IS Updated" });
+    } catch (e) {
+        console.log(e);
+        res.send({ success: false, error: e.toString() });
+    }
+}

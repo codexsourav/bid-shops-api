@@ -34,6 +34,36 @@ export const getBids = async (req, res) => {
     }
 }
 
+export const getSlides = async (req, res) => {
+    try {
+        const currentDate = new Date();
+        const userbids = req.authUser.bids;
+        let data = await bidModel.find({ startDate: { $lte: currentDate }, endDate: { $gte: currentDate }, isSlide: true });
+        var userBiddata;
+
+        data = data.map(item => {
+            if (userbids.includes(item._id)) {
+
+                for (let i = 0; i < item.users.length; i++) {
+                    const element = item.users[i];
+                    if (element.user == req.authUser._id) {
+                        userBiddata = element;
+                        break;
+                    }
+                }
+
+                return { ...item.toObject(), isAttemd: true, userData: userBiddata };
+            } else {
+                return { ...item.toObject(), isAttemd: false };
+            }
+        });
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({ error: 'An error occurred while fetching bids.' });
+    }
+}
+
 
 
 export const addNewBidAmount = async (req, res) => {
@@ -82,13 +112,22 @@ export const getBidResults = async (req, res) => {
 
 
 
-const getWinners = async (req, res) => {
-    const data = await bidModel.find();
-    const allBids = data.users;
 
-    for (let i = 0; i < allBids.length; i++) {
-        const element = allBids[i];
+export const getWinners = async (req, res) => {
+    try {
+        var data = [];
+        const bidData = await bidModel.find({ selectWinner: true });
 
+        for (let i = 0; i < bidData.length; i++) {
+            const bid = bidData[i];
+            const bidUser = bid.winner.user;
+            const updatedData = await usersModel.findOne({ _id: bidUser }, { pass: 0, verify: 0, watchList: 0, address: 0, cart: 0 });
+            data.push({ ...bid._doc, winner: { ...updatedData._doc, "winData": bid.winner } });
+        }
+        return res.status(200).send(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send([]);
     }
 
 }

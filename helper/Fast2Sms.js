@@ -5,7 +5,7 @@ import generateOTP from "../utils/GenerateOTP.js";
 import futureTime from "../utils/MakeTimes.js";
 import generateRandomString from "../utils/RendomString.js";
 
-export default async (mobile) => {
+export default async (mobile, newnumber = null) => {
     const otp = generateOTP();
     var options = {
         method: 'POST',
@@ -15,13 +15,13 @@ export default async (mobile) => {
             Authorization: process.env.FAST2SMS,
             'Content-Type': 'application/json'
         },
-        data: { variables_values: otp, route: 'otp', numbers: mobile }
+        data: { variables_values: otp, route: 'otp', numbers: newnumber || mobile }
     };
 
     try {
-        const response = await axios.request(options);
         const otpHash = hash(otp);
         await usersModel.updateOne({ mobile }, { "verify": { "otpToken": otpHash, otpDate: futureTime(10), } });
+        const response = await axios.request(options);
         return response.data;
     } catch (error) {
         throw error.response?.data.message ? new Error(error.response.data.message) : error;

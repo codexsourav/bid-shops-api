@@ -21,7 +21,7 @@ export default async (req, res, next) => {
 
         const getUser = await userdb.findOne({
             "$or": [{ "_id": user.id, }, { "email": user.email }, { "mobile": user.mobile }]
-        }, { "pass": 0, "token": 0, "verify": 0 });
+        });
         if (!getUser) {
             return res.status(401).send({ "error": "You Are Not Authorized", "auth": false });
         }

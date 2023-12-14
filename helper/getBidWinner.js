@@ -42,8 +42,10 @@ export const getBidWinner = async (data) => {
             const element = data[i];
             if (element.amount == winnerAmount) {
                 const winnerData = await usersModel.findOne({ _id: element.user }, { pass: 0, verify: 0, cart: 0 });
-                winner = { "amountData": element, "profile": winnerData }
-                break;
+                if (winnerData) {
+                    winner = { "amountData": element, "profile": winnerData }
+                    break;
+                }
             }
         }
     }

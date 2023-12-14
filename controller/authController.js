@@ -114,11 +114,11 @@ export const signUp = async (req, res) => {
             return res.json({ "error": "Email ID Already Exist", "success": false });
         }
 
-        // send Otp HEre 
+        // send Otp Here 
         const createUser = new usersModel({ name, email, mobile, pass });
         const user = await createUser.save();
-        await sendOtp(mobile);
         await sendVerifyMailMail(name, email, "Verify Your Account");
+        await sendOtp(mobile);
         delete user._doc.pass;
         delete user._doc.verify;
 

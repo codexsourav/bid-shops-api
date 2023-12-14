@@ -1,6 +1,7 @@
 import usersModel from '../models/usersModel.js';
 
 
+
 export const updateUserAddress = async (req, res) => {
     try {
         const {
@@ -28,7 +29,11 @@ export const updateUserAddress = async (req, res) => {
         };
 
         // Save the updated user with the new address
-        const updatedUser = await usersModel.updateOne({ _id: req.authUser._id }, { $set: { address } });
+        const updatedUser = await usersModel.findOneAndUpdate(
+            { _id: req.authUser._id },
+            { $set: { address } },
+            { returnDocument: 'after' }
+        );
 
         res.status(200).json({ success: true, res: updatedUser });
     } catch (error) {

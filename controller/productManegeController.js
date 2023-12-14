@@ -1,6 +1,5 @@
 import productModel from "../models/productModel.js";
 
-
 export const addProduct = async (req, res) => {
 
     try {
@@ -31,11 +30,7 @@ export const addProduct = async (req, res) => {
     }
 }
 
-
-
-
 export const updateProduct = async (req, res) => {
-
 
     try {
         const id = req.params.id;
