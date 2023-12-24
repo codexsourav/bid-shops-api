@@ -5,7 +5,7 @@ const products = new Schema({
     title: {
         type: String,
         required: true,
-        lowercase: true,
+        lowercase: false,
         minLength: 2,
         trim: true,
     },

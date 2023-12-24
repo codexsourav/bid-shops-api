@@ -6,7 +6,7 @@ const users = new Schema({
     name: {
         type: String,
         required: true,
-        lowercase: true,
+        lowercase: false,
         minLength: 2,
         trim: true,
     },

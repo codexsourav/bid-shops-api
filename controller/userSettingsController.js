@@ -6,6 +6,10 @@ import { isDateUpToCurrent } from "../utils/MakeTimes.js";
 import makeTwtToken from "../utils/makeTwtToken.js";
 import { isValidMobile } from "../utils/validate.js";
 
+export const appStatus = (req, res) => {
+    res.send({ "v": "1.0.0", "url": "http://localhost:8000/api/status" })
+}
+
 export const updateProfile = async (req, res) => {
 
     try {

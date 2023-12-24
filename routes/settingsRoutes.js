@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import middleware from '../middleware/middleware.js';
-import { setUpdatedMobile, updateEmail, updateMobile, updatePass, updateProfile } from '../controller/userSettingsController.js';
+import { appStatus, setUpdatedMobile, updateEmail, updateMobile, updatePass, updateProfile } from '../controller/userSettingsController.js';
 const appRoutes = Router();
+
+appRoutes.get('/api/status', appStatus);
 
 appRoutes.put('/api/settings/profile', middleware, updateProfile);
 appRoutes.put('/api/settings/email', middleware, updateEmail);
